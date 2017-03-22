@@ -29,16 +29,17 @@ class Rslvr: Stopable {
         let error = NSError(domain: "test", code: -1, userInfo: nil)
         closure(error)
     }
-    func stop(){}
+    func stop() {
+    }
 }
 
 class SwiftyURLProtocolTests: XCTestCase {
-    
+
     //run ssh -N -D 9050 127.0.0.1 -v
     func testSocks() {
         let exp = expectation(description: "http")
-        
-        SwiftyURLProtocol.setRouter { (request) -> SwiftyURLProtocol.Proxy? in
+
+        SwiftyURLProtocol.setRouter { (_) -> SwiftyURLProtocol.Proxy? in
             return SwiftyURLProtocol.Proxy.socks(host: "127.0.0.1", port: 9050, probe: nil)
         }
 
@@ -50,15 +51,15 @@ class SwiftyURLProtocolTests: XCTestCase {
             XCTAssertNil(error)
             exp.fulfill()
         }
-        
+
         task.resume()
         waitForExpectations(timeout: 100)
     }
-    
+
     func testProbe() {
         let exp = expectation(description: "resolver")
-        
-        SwiftyURLProtocol.setRouter { (request) -> SwiftyURLProtocol.Proxy? in
+
+        SwiftyURLProtocol.setRouter { (_) -> SwiftyURLProtocol.Proxy? in
             return SwiftyURLProtocol.Proxy.socks(host: "127.0.0.1", port: 9050) { (host, closure) -> Stopable in
                 return Rslvr(closure: closure)
             }
@@ -72,7 +73,7 @@ class SwiftyURLProtocolTests: XCTestCase {
             XCTAssertNotNil(error)
             exp.fulfill()
         }
-        
+
         task.resume()
         waitForExpectations(timeout: 100)
     }

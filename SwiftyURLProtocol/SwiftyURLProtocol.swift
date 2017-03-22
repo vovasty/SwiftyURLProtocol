@@ -26,18 +26,18 @@ import Foundation
 
 /// Types adopting the `Stopable` protocol can be used to provide objects, which activity can be stopped
 public protocol Stopable {
-    
+
     //Stops any activity
     func stop()
 }
 
-let SwiftyURLProtocolPassHeader = "X-SwiftyURLProtocol-Pass"
+let swiftyURLProtocolPassHeader = "X-SwiftyURLProtocol-Pass"
 
 public extension SwiftyURLProtocol {
-    
+
     /// `Proxy` is the type used to configure external proxies.
     public enum Proxy {
-        
+
         /// socks proxy.
         ///
         /// - host:                 an ip or a host of the proxy.
@@ -46,10 +46,10 @@ public extension SwiftyURLProtocol {
         case socks(host: String, port: Int, probe: SwiftyURLProtocol.Probe?)
         case http(host: String, port: Int, probe: SwiftyURLProtocol.Probe?)
     }
-    
+
     /// `Router` is the type used to define which proxy should be used for particular request.
     public typealias Router = (_ request: URLRequest) -> SwiftyURLProtocol.Proxy?
-    
+
     /// `Probe` is the type used to test host.
     ///
     /// - host:                 an ip or a host of the proxy.
@@ -65,20 +65,23 @@ open class SwiftyURLProtocol: URLProtocol {
     fileprivate var probeTimer: Timer?
 
     private static var router: Router?
-    
+
     /// sets a `Router` for `URLProtocol`
     public static func setRouter(router: @escaping Router) {
         SwiftyURLProtocol.router = router
     }
 
     override open class func canInit(with request: URLRequest) -> Bool {
-        guard URLProtocol.property(forKey: SwiftyURLProtocolPassHeader, in: request) == nil else { return false }
+        guard URLProtocol.property(forKey: swiftyURLProtocolPassHeader, in: request) == nil else { return false }
         return router?(request) != nil
     }
 
     override init(request: URLRequest, cachedResponse: CachedURLResponse?, client: URLProtocolClient?) {
-        let request = (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
-        URLProtocol.setProperty(true, forKey: SwiftyURLProtocolPassHeader, in: request)
+        guard let request = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
+            assert(false)
+        }
+
+        URLProtocol.setProperty(true, forKey: swiftyURLProtocolPassHeader, in: request)
 
         super.init(request: request as URLRequest, cachedResponse: cachedResponse, client: client)
     }
@@ -89,16 +92,16 @@ open class SwiftyURLProtocol: URLProtocol {
 
     override open func startLoading() {
         guard let host = request.url?.host else {
-            client?.urlProtocol(self, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: nil) )
+            client?.urlProtocol(self, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: nil))
             return
         }
-        
+
         guard let router = SwiftyURLProtocol.router else { return }
         guard let proxyType = router(request) else { return }
 
         let closure: (Error?) -> Void = {[weak self] (error) -> Void in
             guard let myself = self else { return }
-            
+
             myself.probeTimer?.invalidate()
             myself.probeTimer = nil
 
@@ -106,9 +109,9 @@ open class SwiftyURLProtocol: URLProtocol {
                 myself.client?.urlProtocol(myself, didFailWithError: error! )
                 return
             }
-            
+
             let config = URLSessionConfiguration.default
-            
+
             switch proxyType {
             case .socks(let proxyHost, let proxyPort, _):
                 config.connectionProxyDictionary = [
@@ -117,7 +120,7 @@ open class SwiftyURLProtocol: URLProtocol {
                     kCFStreamPropertySOCKSProxyHost as AnyHashable: proxyHost,
                     kCFStreamPropertySOCKSProxyPort as AnyHashable: proxyPort
                 ]
-                
+
                 myself.httpConnection = HTTPConnection(request: myself.request, configuration: config)
                 myself.httpConnection?.delegate = self
                 myself.httpConnection?.start()
@@ -127,7 +130,7 @@ open class SwiftyURLProtocol: URLProtocol {
                     kCFNetworkProxiesHTTPPort as AnyHashable: proxyPort,
                     kCFNetworkProxiesHTTPEnable as AnyHashable: true
                 ]
-                
+
                 myself.session = Foundation.URLSession(configuration: config,
                                                        delegate: myself,
                                                        delegateQueue: OperationQueue.current)
@@ -140,27 +143,31 @@ open class SwiftyURLProtocol: URLProtocol {
         case .socks(_, _, let probe):
             if probe != nil {
                 self.probe = probe?(host, closure)
-            }
-            else {
+            } else {
                 closure(nil)
             }
         case .http(_, _, let probe):
             if probe != nil {
                 self.probe = probe?(host, closure)
-            }
-            else {
+            } else {
                 closure(nil)
             }
         }
-        
+
         let timeout = request.timeoutInterval > 20 ? request.timeoutInterval - 10 : 90
-        
-        probeTimer = Timer(timeInterval: timeout, repeats: false) { [weak self] (timer) in
+
+        probeTimer = Timer(timeInterval: timeout, repeats: false) { [weak self] (_) in
             guard let myself = self else { return }
-            myself.client?.urlProtocol(myself, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: [NSLocalizedDescriptionKey: "probe timeout"]) )
+
+            let error = NSError(domain: NSCocoaErrorDomain,
+                                code: -1,
+                                userInfo: [NSLocalizedDescriptionKey: "probe timeout"])
+
+            myself.client?.urlProtocol(myself,
+                                       didFailWithError: error)
             myself.stopLoading()
         }
-        
+
         RunLoop.main.add(probeTimer!, forMode: RunLoopMode.defaultRunLoopMode)
     }
 
@@ -174,7 +181,7 @@ open class SwiftyURLProtocol: URLProtocol {
         probeTimer = nil
         probe = nil
     }
-    
+
     deinit {
         stopLoading()
     }
@@ -188,71 +195,85 @@ extension SwiftyURLProtocol: HTTPConnectionDelegate {
     func http(connection: HTTPConnection, didReceiveData data: Data) {
         client?.urlProtocol(self, didLoad: data)
     }
-    
+
     func http(connection: HTTPConnection, didCompleteWithError error: Error?) {
         if let error = error {
             client?.urlProtocol(self, didFailWithError: error)
-        }
-        else {
+        } else {
             client?.urlProtocolDidFinishLoading(self)
         }
     }
-    
-    func http(connection: HTTPConnection, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) {
-        let redirectRequest = (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
-        URLProtocol.removeProperty(forKey: SwiftyURLProtocolPassHeader, in: redirectRequest)
+
+    func http(connection: HTTPConnection,
+              willPerformHTTPRedirection response: HTTPURLResponse,
+              newRequest request: URLRequest) {
+        guard let redirectRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
+            assert(false)
+        }
+        URLProtocol.removeProperty(forKey: swiftyURLProtocolPassHeader, in: redirectRequest)
         // Tell the client about the redirect.
-        
+
         client?.urlProtocol(self, wasRedirectedTo: redirectRequest as URLRequest, redirectResponse: response)
-        
+
         // Stop our load.  The CFNetwork infrastructure will create a new NSURLProtocol instance to run
         // the load of the redirect.
-        
-        // The following ends up calling -URLSession:task:didCompleteWithError: with NSURLErrorDomain / NSURLErrorCancelled,
+
+        // The following ends up calling -URLSession:task:didCompleteWithError: with 
+        // NSURLErrorDomain / NSURLErrorCancelled,
         // which specificallys traps and ignores the error.
-        
+
         connection.invalidateAndStop()
-        client?.urlProtocol(self, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil) )
+
+        let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
+        client?.urlProtocol(self, didFailWithError: error)
     }
 }
 
 extension SwiftyURLProtocol: URLSessionDelegate {
     //NSURLSessionDelegate
-    func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: (URLRequest?) -> Void) {
-        let redirectRequest = (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
-        URLProtocol.removeProperty(forKey: SwiftyURLProtocolPassHeader, in: redirectRequest)
+    func URLSession(_ session: Foundation.URLSession,
+                    task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse,
+                    newRequest request: URLRequest,
+                    completionHandler: (URLRequest?) -> Void) {
+
+        guard let redirectRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
+            assert(false)
+        }
+
+        URLProtocol.removeProperty(forKey: swiftyURLProtocolPassHeader, in: redirectRequest)
         // Tell the client about the redirect.
-        
+
         client?.urlProtocol(self, wasRedirectedTo: redirectRequest as URLRequest, redirectResponse: response)
-        
+
         // Stop our load.  The CFNetwork infrastructure will create a new NSURLProtocol instance to run
         // the load of the redirect.
-        
-        // The following ends up calling -URLSession:task:didCompleteWithError: with NSURLErrorDomain / NSURLErrorCancelled,
+
+        // The following ends up calling -URLSession:task:didCompleteWithError: with 
+        // NSURLErrorDomain / NSURLErrorCancelled,
         // which specificallys traps and ignores the error.
-        
+
         task.cancel()
-        client?.urlProtocol(self, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil) )
+
+        let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
+        client?.urlProtocol(self, didFailWithError: error)
     }
-    
-    //    func URLSession(session: NSURLSession, task: NSURLSessionTask, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
-    //        client?.URLProtocol(self, didReceiveAuthenticationChallenge: challenge)
-    //    }
-    
-    func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveResponse response: URLResponse, completionHandler: (Foundation.URLSession.ResponseDisposition) -> Void) {
+
+    func URLSession(_ session: Foundation.URLSession,
+                    dataTask: URLSessionDataTask,
+                    didReceiveResponse response: URLResponse,
+                    completionHandler: (Foundation.URLSession.ResponseDisposition) -> Void) {
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: URLCache.StoragePolicy.allowed)
         completionHandler(Foundation.URLSession.ResponseDisposition.allow)
     }
-    
     func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: NSError?) {
         if let error = error {
             client?.urlProtocol(self, didFailWithError: error)
-        }
-        else {
+        } else {
             client?.urlProtocolDidFinishLoading(self)
         }
     }
-    
+
     func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveData data: Data) {
         client?.urlProtocol(self, didLoad: data)
     }
