@@ -99,7 +99,8 @@ open class SwiftyURLProtocol: URLProtocol {
         let closure: (Error?) -> Void = {[weak self] (error) -> Void in
             guard let myself = self else { return }
             
-            myself.probeTimer?.stop()
+            myself.probeTimer?.invalidate()
+            myself.probeTimer = nil
 
             guard error == nil else {
                 myself.client?.urlProtocol(myself, didFailWithError: error! )
@@ -135,8 +136,6 @@ open class SwiftyURLProtocol: URLProtocol {
             }
         }
 
-        let timeout = Int(request.timeoutInterval > 20 ? request.timeoutInterval - 10 : 90)
-        
         switch proxyType {
         case .socks(_, _, let probe):
             if probe != nil {
@@ -154,7 +153,9 @@ open class SwiftyURLProtocol: URLProtocol {
             }
         }
         
-        self.probeTimer = Timer(timeout: timeout, repeatable: false, fireImmediately: false) { [weak self] (timer) in
+        let timeout = request.timeoutInterval > 20 ? request.timeoutInterval - 10 : 90
+        
+        self.probeTimer = Timer(timeInterval: timeout, repeats: false) { [weak self] (timer) in
             guard let myself = self else { return }
             myself.client?.urlProtocol(myself, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: [NSLocalizedFailureReasonErrorKey: "probe timeout"]) )
             myself.stopLoading()
@@ -162,7 +163,7 @@ open class SwiftyURLProtocol: URLProtocol {
     }
 
     override open func stopLoading() {
-        probeTimer?.stop()
+        probeTimer?.invalidate()
         probe?.stop()
         session?.invalidateAndCancel()
         httpConnection?.invalidateAndStop()
