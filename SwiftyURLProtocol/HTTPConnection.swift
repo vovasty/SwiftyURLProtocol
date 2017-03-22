@@ -76,6 +76,7 @@ class HTTPConnection: NSObject {
     var haveReceivedResponse: Bool = false
     var runLoop = RunLoop.main
     var runLoopMode = RunLoopMode.defaultRunLoopMode
+    fileprivate var buf = Array<UInt8>(repeating: 0, count: 1024)
     
     weak var delegate: HTTPConnectionDelegate?
     
@@ -202,7 +203,6 @@ extension HTTPConnection: StreamDelegate {
         case Stream.Event.hasBytesAvailable:
             guard let aStream = aStream as? InputStream else { return }
             var data = Data(capacity: 1024)
-            var buf = Array<UInt8>(repeating: 0, count: 1024)
             
             while aStream.hasBytesAvailable {
                 let count = aStream.read(&buf, maxLength: 1024)
