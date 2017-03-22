@@ -155,11 +155,13 @@ open class SwiftyURLProtocol: URLProtocol {
         
         let timeout = request.timeoutInterval > 20 ? request.timeoutInterval - 10 : 90
         
-        self.probeTimer = Timer(timeInterval: timeout, repeats: false) { [weak self] (timer) in
+        probeTimer = Timer(timeInterval: timeout, repeats: false) { [weak self] (timer) in
             guard let myself = self else { return }
-            myself.client?.urlProtocol(myself, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: [NSLocalizedFailureReasonErrorKey: "probe timeout"]) )
+            myself.client?.urlProtocol(myself, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: [NSLocalizedDescriptionKey: "probe timeout"]) )
             myself.stopLoading()
         }
+        
+        RunLoop.main.add(probeTimer!, forMode: RunLoopMode.defaultRunLoopMode)
     }
 
     override open func stopLoading() {
