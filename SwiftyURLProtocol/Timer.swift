@@ -1,6 +1,7 @@
 //
-//  SwiftyURLProtocol.h
+//  Timer
 //
+//  Created by Solomenchuk, Vlad on 3/15/17.
 //  Copyright © 2017 Solomenchuk, Vlad (http://aramzamzam.net/).
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +23,38 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+import Foundation
 
-//! Project version number for SwiftyURLProtocol.
-FOUNDATION_EXPORT double SwiftyURLProtocolVersionNumber;
+public class Timer {
+    fileprivate let timer: DispatchSourceTimer
 
-//! Project version string for SwiftyURLProtocol.
-FOUNDATION_EXPORT const unsigned char SwiftyURLProtocolVersionString[];
+    public init(timeout: Int,
+                  queue: DispatchQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.default),
+             repeatable: Bool,
+        fireImmediately: Bool = false,
+                  block:@escaping (_ timer: Timer) -> Void) {
+        timer = DispatchSource.makeTimerSource(queue: queue)
+        timer.setEventHandler { block(self) }
 
-// In this header, you should import all the public headers of your framework using statements like #import <SwiftyURLProtocol/PublicHeader.h>
+        let startTime = DispatchTime.now() + (fireImmediately ? 0.0 : Double(timeout))
 
+        if repeatable {
+            timer.scheduleRepeating(deadline: startTime,
+                                    interval: DispatchTimeInterval.seconds(timeout))
+        } else {
+            timer.scheduleOneshot(deadline: startTime)
+        }
+    }
 
+    public func start() {
+        timer.resume()
+    }
+
+    public func stop() {
+        timer.cancel()
+    }
+
+    deinit {
+        timer.cancel()
+    }
+}

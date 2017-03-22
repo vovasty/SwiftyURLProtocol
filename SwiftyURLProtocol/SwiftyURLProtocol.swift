@@ -1,50 +1,84 @@
 //
-//  ProxyURLProtocol.swift
-//  SwiftyI2P
+//  SwiftyURLProtocol.swift
 //
-//  Created by Solomenchuk, Vlad on 12/19/15.
-//  Copyright © 2015 Aramzamzam LLC. All rights reserved.
+//  Copyright © 2017 Solomenchuk, Vlad (http://aramzamzam.net/).
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 import Foundation
 
+/// Types adopting the `Stopable` protocol can be used to provide objects, which activity can be stopped
 public protocol Stopable {
+    
+    //Stops any activity
     func stop()
 }
 
-let ProxyURLProtocolPassHeader = "X-ProxyURLProtocol-Pass"
+let SwiftyURLProtocolPassHeader = "X-SwiftyURLProtocol-Pass"
 
-public extension ProxyURLProtocol {
+public extension SwiftyURLProtocol {
+    
+    /// `Proxy` is the type used to configure external proxies.
     public enum Proxy {
-        case socks(host: String, port: Int, resolver: ProxyURLProtocol.Resolver)
-        case http(host: String, port: Int, resolver: ProxyURLProtocol.Resolver)
+        
+        /// socks proxy.
+        ///
+        /// - host:                 an ip or a host of the proxy.
+        /// - port:                 the port of the proxy
+        /// - probe:                closure to perform test of a host.
+        case socks(host: String, port: Int, probe: SwiftyURLProtocol.Probe?)
+        case http(host: String, port: Int, probe: SwiftyURLProtocol.Probe?)
     }
     
-    public typealias Router = (_ request: URLRequest) -> ProxyURLProtocol.Proxy?
+    /// `Router` is the type used to define which proxy should be used for particular request.
+    public typealias Router = (_ request: URLRequest) -> SwiftyURLProtocol.Proxy?
     
-    public typealias Resolver = (_ host: String, _ timeout: TimeInterval, _ closure: @escaping (_ error: Error?) -> Void) -> Stopable?
+    /// `Probe` is the type used to test host.
+    ///
+    /// - host:                 an ip or a host of the proxy.
+    /// - closure:              should be called when probe is complete.
+    public typealias Probe = (_ host: String, _ closure: @escaping (_ error: Error?) -> Void) -> Stopable
 
 }
 
-open class ProxyURLProtocol: URLProtocol {
+open class SwiftyURLProtocol: URLProtocol {
     fileprivate var session: Foundation.URLSession?
     fileprivate var httpConnection: HTTPConnection?
-    fileprivate var resolver: Stopable?
+    fileprivate var probe: Stopable?
+    fileprivate var probeTimer: Timer?
 
     private static var router: Router?
     
+    /// sets a `Router` for `URLProtocol`
     public static func setRouter(router: @escaping Router) {
-        ProxyURLProtocol.router = router
+        SwiftyURLProtocol.router = router
     }
 
     override open class func canInit(with request: URLRequest) -> Bool {
-        guard URLProtocol.property(forKey: ProxyURLProtocolPassHeader, in: request) == nil else { return false }
+        guard URLProtocol.property(forKey: SwiftyURLProtocolPassHeader, in: request) == nil else { return false }
         return router?(request) != nil
     }
 
     override init(request: URLRequest, cachedResponse: CachedURLResponse?, client: URLProtocolClient?) {
         let request = (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
-        URLProtocol.setProperty(true, forKey: ProxyURLProtocolPassHeader, in: request)
+        URLProtocol.setProperty(true, forKey: SwiftyURLProtocolPassHeader, in: request)
 
         super.init(request: request as URLRequest, cachedResponse: cachedResponse, client: client)
     }
@@ -59,11 +93,13 @@ open class ProxyURLProtocol: URLProtocol {
             return
         }
         
-        guard let router = ProxyURLProtocol.router else { return }
+        guard let router = SwiftyURLProtocol.router else { return }
         guard let proxyType = router(request) else { return }
 
-        let handler: (Error?) -> Void = {[weak self] (error) -> Void in
+        let closure: (Error?) -> Void = {[weak self] (error) -> Void in
             guard let myself = self else { return }
+            
+            myself.probeTimer?.stop()
 
             guard error == nil else {
                 myself.client?.urlProtocol(myself, didFailWithError: error! )
@@ -99,26 +135,49 @@ open class ProxyURLProtocol: URLProtocol {
             }
         }
 
-        let timeout = request.timeoutInterval > 20 ? request.timeoutInterval - 10 : 90
+        let timeout = Int(request.timeoutInterval > 20 ? request.timeoutInterval - 10 : 90)
         
         switch proxyType {
-        case .socks(_, _, let resolver):
-            self.resolver = resolver(host, timeout, handler)
-        case .http(_, _, let resolver):
-            self.resolver = resolver(host, timeout, handler)
+        case .socks(_, _, let probe):
+            if probe != nil {
+                self.probe = probe?(host, closure)
+            }
+            else {
+                closure(nil)
+            }
+        case .http(_, _, let probe):
+            if probe != nil {
+                self.probe = probe?(host, closure)
+            }
+            else {
+                closure(nil)
+            }
+        }
+        
+        self.probeTimer = Timer(timeout: timeout, repeatable: false, fireImmediately: false) { [weak self] (timer) in
+            guard let myself = self else { return }
+            myself.client?.urlProtocol(myself, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: [NSLocalizedFailureReasonErrorKey: "probe timeout"]) )
+            myself.stopLoading()
         }
     }
 
     override open func stopLoading() {
-        resolver?.stop()
+        probeTimer?.stop()
+        probe?.stop()
         session?.invalidateAndCancel()
         httpConnection?.invalidateAndStop()
         httpConnection = nil
         session = nil
+        probeTimer = nil
+        probe = nil
+    }
+    
+    deinit {
+        stopLoading()
     }
 }
 
-extension ProxyURLProtocol: HTTPConnectionDelegate {
+extension SwiftyURLProtocol: HTTPConnectionDelegate {
     func http(connection: HTTPConnection, didReceiveResponse response: URLResponse) {
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: URLCache.StoragePolicy.allowed)
     }
@@ -138,7 +197,7 @@ extension ProxyURLProtocol: HTTPConnectionDelegate {
     
     func http(connection: HTTPConnection, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) {
         let redirectRequest = (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
-        URLProtocol.removeProperty(forKey: ProxyURLProtocolPassHeader, in: redirectRequest)
+        URLProtocol.removeProperty(forKey: SwiftyURLProtocolPassHeader, in: redirectRequest)
         // Tell the client about the redirect.
         
         client?.urlProtocol(self, wasRedirectedTo: redirectRequest as URLRequest, redirectResponse: response)
@@ -154,11 +213,11 @@ extension ProxyURLProtocol: HTTPConnectionDelegate {
     }
 }
 
-extension ProxyURLProtocol: URLSessionDelegate {
+extension SwiftyURLProtocol: URLSessionDelegate {
     //NSURLSessionDelegate
     func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: (URLRequest?) -> Void) {
         let redirectRequest = (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
-        URLProtocol.removeProperty(forKey: ProxyURLProtocolPassHeader, in: redirectRequest)
+        URLProtocol.removeProperty(forKey: SwiftyURLProtocolPassHeader, in: redirectRequest)
         // Tell the client about the redirect.
         
         client?.urlProtocol(self, wasRedirectedTo: redirectRequest as URLRequest, redirectResponse: response)

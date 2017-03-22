@@ -7,14 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD574FD21E7C86010071A110 /* ProxyURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD574FD11E7C86010071A110 /* ProxyURLProtocol.swift */; };
+		CD516ACF1E82EB7500A40F68 /* HTTPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE6115E1E79B59A004B260F /* HTTPConnectionTests.swift */; };
+		CD516AD01E82EB7500A40F68 /* ProxyURLProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD60B9C81E81CD6200EA04F0 /* ProxyURLProtocolTests.swift */; };
+		CD516AD21E82F49500A40F68 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD516AD11E82F49500A40F68 /* Timer.swift */; };
+		CD574FD21E7C86010071A110 /* SwiftyURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD574FD11E7C86010071A110 /* SwiftyURLProtocol.swift */; };
 		CD574FF91E7C9B4B0071A110 /* SwiftyURLProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD574FF01E7C9B4B0071A110 /* SwiftyURLProtocol.framework */; };
 		CD5750071E7C9BC40071A110 /* HTTPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE6116A1E79B5F3004B260F /* HTTPConnection.swift */; };
-		CD5750081E7C9BC40071A110 /* ProxyURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD574FD11E7C86010071A110 /* ProxyURLProtocol.swift */; };
+		CD5750081E7C9BC40071A110 /* SwiftyURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD574FD11E7C86010071A110 /* SwiftyURLProtocol.swift */; };
 		CD5750091E7C9BF30071A110 /* SwiftyURLProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = CDE611531E79B59A004B260F /* SwiftyURLProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CD57500A1E7C9C020071A110 /* HTTPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE6115E1E79B59A004B260F /* HTTPConnectionTests.swift */; };
 		CD60B9C91E81CD6200EA04F0 /* ProxyURLProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD60B9C81E81CD6200EA04F0 /* ProxyURLProtocolTests.swift */; };
-		CD60B9CA1E81CD6200EA04F0 /* ProxyURLProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD60B9C81E81CD6200EA04F0 /* ProxyURLProtocolTests.swift */; };
 		CDE6115A1E79B59A004B260F /* SwiftyURLProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDE611501E79B59A004B260F /* SwiftyURLProtocol.framework */; };
 		CDE6115F1E79B59A004B260F /* HTTPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE6115E1E79B59A004B260F /* HTTPConnectionTests.swift */; };
 		CDE611611E79B59A004B260F /* SwiftyURLProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = CDE611531E79B59A004B260F /* SwiftyURLProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -39,14 +40,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CD574FD11E7C86010071A110 /* ProxyURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyURLProtocol.swift; sourceTree = "<group>"; };
+		CD516AD11E82F49500A40F68 /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		CD574FD11E7C86010071A110 /* SwiftyURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyURLProtocol.swift; sourceTree = "<group>"; };
 		CD574FF01E7C9B4B0071A110 /* SwiftyURLProtocol.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftyURLProtocol.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD574FF81E7C9B4B0071A110 /* SwiftyURLProtocol iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftyURLProtocol iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD574FF81E7C9B4B0071A110 /* SwiftyURLProtocol iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftyURLProtocol iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD60B9C81E81CD6200EA04F0 /* ProxyURLProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyURLProtocolTests.swift; sourceTree = "<group>"; };
 		CDE611501E79B59A004B260F /* SwiftyURLProtocol.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftyURLProtocol.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDE611531E79B59A004B260F /* SwiftyURLProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftyURLProtocol.h; sourceTree = "<group>"; };
 		CDE611541E79B59A004B260F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CDE611591E79B59A004B260F /* SwiftyURLProtocolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftyURLProtocolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDE611591E79B59A004B260F /* SwiftyURLProtocolTests macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftyURLProtocolTests macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDE6115E1E79B59A004B260F /* HTTPConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPConnectionTests.swift; sourceTree = "<group>"; };
 		CDE611601E79B59A004B260F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDE6116A1E79B5F3004B260F /* HTTPConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPConnection.swift; sourceTree = "<group>"; };
@@ -99,9 +101,9 @@
 			isa = PBXGroup;
 			children = (
 				CDE611501E79B59A004B260F /* SwiftyURLProtocol.framework */,
-				CDE611591E79B59A004B260F /* SwiftyURLProtocolTests.xctest */,
+				CDE611591E79B59A004B260F /* SwiftyURLProtocolTests macOS Tests.xctest */,
 				CD574FF01E7C9B4B0071A110 /* SwiftyURLProtocol.framework */,
-				CD574FF81E7C9B4B0071A110 /* SwiftyURLProtocol iOSTests.xctest */,
+				CD574FF81E7C9B4B0071A110 /* SwiftyURLProtocol iOS Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,7 +114,8 @@
 				CDE611531E79B59A004B260F /* SwiftyURLProtocol.h */,
 				CDE611541E79B59A004B260F /* Info.plist */,
 				CDE6116A1E79B5F3004B260F /* HTTPConnection.swift */,
-				CD574FD11E7C86010071A110 /* ProxyURLProtocol.swift */,
+				CD574FD11E7C86010071A110 /* SwiftyURLProtocol.swift */,
+				CD516AD11E82F49500A40F68 /* Timer.swift */,
 			);
 			path = SwiftyURLProtocol;
 			sourceTree = "<group>";
@@ -167,9 +170,9 @@
 			productReference = CD574FF01E7C9B4B0071A110 /* SwiftyURLProtocol.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CD574FF71E7C9B4B0071A110 /* SwiftyURLProtocol iOSTests */ = {
+		CD574FF71E7C9B4B0071A110 /* SwiftyURLProtocol iOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CD5750061E7C9B4B0071A110 /* Build configuration list for PBXNativeTarget "SwiftyURLProtocol iOSTests" */;
+			buildConfigurationList = CD5750061E7C9B4B0071A110 /* Build configuration list for PBXNativeTarget "SwiftyURLProtocol iOS Tests" */;
 			buildPhases = (
 				CD574FF41E7C9B4B0071A110 /* Sources */,
 				CD574FF51E7C9B4B0071A110 /* Frameworks */,
@@ -180,9 +183,9 @@
 			dependencies = (
 				CD574FFB1E7C9B4B0071A110 /* PBXTargetDependency */,
 			);
-			name = "SwiftyURLProtocol iOSTests";
+			name = "SwiftyURLProtocol iOS Tests";
 			productName = "SwiftyURLProtocol iOSTests";
-			productReference = CD574FF81E7C9B4B0071A110 /* SwiftyURLProtocol iOSTests.xctest */;
+			productReference = CD574FF81E7C9B4B0071A110 /* SwiftyURLProtocol iOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		CDE6114F1E79B599004B260F /* SwiftyURLProtocol macOS */ = {
@@ -203,9 +206,9 @@
 			productReference = CDE611501E79B59A004B260F /* SwiftyURLProtocol.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CDE611581E79B59A004B260F /* SwiftyURLProtocolTests */ = {
+		CDE611581E79B59A004B260F /* SwiftyURLProtocolTests macOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CDE611671E79B59A004B260F /* Build configuration list for PBXNativeTarget "SwiftyURLProtocolTests" */;
+			buildConfigurationList = CDE611671E79B59A004B260F /* Build configuration list for PBXNativeTarget "SwiftyURLProtocolTests macOS Tests" */;
 			buildPhases = (
 				CDE611551E79B59A004B260F /* Sources */,
 				CDE611561E79B59A004B260F /* Frameworks */,
@@ -216,9 +219,9 @@
 			dependencies = (
 				CDE6115C1E79B59A004B260F /* PBXTargetDependency */,
 			);
-			name = SwiftyURLProtocolTests;
+			name = "SwiftyURLProtocolTests macOS Tests";
 			productName = SwiftyURLProtocolTests;
-			productReference = CDE611591E79B59A004B260F /* SwiftyURLProtocolTests.xctest */;
+			productReference = CDE611591E79B59A004B260F /* SwiftyURLProtocolTests macOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -267,9 +270,9 @@
 			projectRoot = "";
 			targets = (
 				CDE6114F1E79B599004B260F /* SwiftyURLProtocol macOS */,
-				CDE611581E79B59A004B260F /* SwiftyURLProtocolTests */,
+				CDE611581E79B59A004B260F /* SwiftyURLProtocolTests macOS Tests */,
 				CD574FEF1E7C9B4B0071A110 /* SwiftyURLProtocol iOS */,
-				CD574FF71E7C9B4B0071A110 /* SwiftyURLProtocol iOSTests */,
+				CD574FF71E7C9B4B0071A110 /* SwiftyURLProtocol iOS Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -311,7 +314,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD5750071E7C9BC40071A110 /* HTTPConnection.swift in Sources */,
-				CD5750081E7C9BC40071A110 /* ProxyURLProtocol.swift in Sources */,
+				CD5750081E7C9BC40071A110 /* SwiftyURLProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,8 +322,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD57500A1E7C9C020071A110 /* HTTPConnectionTests.swift in Sources */,
-				CD60B9CA1E81CD6200EA04F0 /* ProxyURLProtocolTests.swift in Sources */,
+				CD516ACF1E82EB7500A40F68 /* HTTPConnectionTests.swift in Sources */,
+				CD516AD01E82EB7500A40F68 /* ProxyURLProtocolTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,7 +331,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD574FD21E7C86010071A110 /* ProxyURLProtocol.swift in Sources */,
+				CD516AD21E82F49500A40F68 /* Timer.swift in Sources */,
+				CD574FD21E7C86010071A110 /* SwiftyURLProtocol.swift in Sources */,
 				CDE6116B1E79B5F3004B260F /* HTTPConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -476,7 +480,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = SwiftyURLProtocol;
@@ -524,7 +528,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = SwiftyURLProtocol;
 				SDKROOT = macosx;
@@ -549,7 +553,6 @@
 				INFOPLIST_FILE = SwiftyURLProtocol/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = net.aramzamzam.SwiftyURLProtocol;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -572,7 +575,6 @@
 				INFOPLIST_FILE = SwiftyURLProtocol/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = net.aramzamzam.SwiftyURLProtocol;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -619,7 +621,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD5750061E7C9B4B0071A110 /* Build configuration list for PBXNativeTarget "SwiftyURLProtocol iOSTests" */ = {
+		CD5750061E7C9B4B0071A110 /* Build configuration list for PBXNativeTarget "SwiftyURLProtocol iOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CD5750031E7C9B4B0071A110 /* Debug */,
@@ -646,7 +648,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CDE611671E79B59A004B260F /* Build configuration list for PBXNativeTarget "SwiftyURLProtocolTests" */ = {
+		CDE611671E79B59A004B260F /* Build configuration list for PBXNativeTarget "SwiftyURLProtocolTests macOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CDE611681E79B59A004B260F /* Debug */,
