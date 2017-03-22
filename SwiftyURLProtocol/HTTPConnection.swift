@@ -205,8 +205,8 @@ extension HTTPConnection: StreamDelegate {
             var buf = Array<UInt8>(repeating: 0, count: 1024)
             
             while aStream.hasBytesAvailable {
-                aStream.read(&buf, maxLength: 1024)
-                data.append(contentsOf: buf)
+                let count = aStream.read(&buf, maxLength: 1024)
+                data.append(buf, count: count)
             }
             
             delegate?.http(connection: self, didReceiveData: data)
