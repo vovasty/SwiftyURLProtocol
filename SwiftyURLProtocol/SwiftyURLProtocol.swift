@@ -167,8 +167,6 @@ open class SwiftyURLProtocol: URLProtocol {
                                        didFailWithError: error)
             myself.stopLoading()
         }
-
-        RunLoop.main.add(probeTimer!, forMode: RunLoopMode.defaultRunLoopMode)
     }
 
     override open func stopLoading() {

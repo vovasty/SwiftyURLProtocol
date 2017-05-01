@@ -15,6 +15,7 @@
 		CD5750081E7C9BC40071A110 /* SwiftyURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD574FD11E7C86010071A110 /* SwiftyURLProtocol.swift */; };
 		CD5750091E7C9BF30071A110 /* SwiftyURLProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = CDE611531E79B59A004B260F /* SwiftyURLProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD60B9C91E81CD6200EA04F0 /* ProxyURLProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD60B9C81E81CD6200EA04F0 /* ProxyURLProtocolTests.swift */; };
+		CDC358F21EB7CD1F00076B59 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC358F11EB7CD1F00076B59 /* Timer.swift */; };
 		CDE6115A1E79B59A004B260F /* SwiftyURLProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDE611501E79B59A004B260F /* SwiftyURLProtocol.framework */; };
 		CDE6115F1E79B59A004B260F /* HTTPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE6115E1E79B59A004B260F /* HTTPConnectionTests.swift */; };
 		CDE611611E79B59A004B260F /* SwiftyURLProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = CDE611531E79B59A004B260F /* SwiftyURLProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -43,6 +44,7 @@
 		CD574FF01E7C9B4B0071A110 /* SwiftyURLProtocol.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftyURLProtocol.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD574FF81E7C9B4B0071A110 /* SwiftyURLProtocol iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftyURLProtocol iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD60B9C81E81CD6200EA04F0 /* ProxyURLProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyURLProtocolTests.swift; sourceTree = "<group>"; };
+		CDC358F11EB7CD1F00076B59 /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		CDE611501E79B59A004B260F /* SwiftyURLProtocol.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftyURLProtocol.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDE611531E79B59A004B260F /* SwiftyURLProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftyURLProtocol.h; sourceTree = "<group>"; };
 		CDE611541E79B59A004B260F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 		CDE611521E79B59A004B260F /* SwiftyURLProtocol */ = {
 			isa = PBXGroup;
 			children = (
+				CDC358F11EB7CD1F00076B59 /* Timer.swift */,
 				CDE611531E79B59A004B260F /* SwiftyURLProtocol.h */,
 				CDE611541E79B59A004B260F /* Info.plist */,
 				CDE6116A1E79B5F3004B260F /* HTTPConnection.swift */,
@@ -359,6 +362,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDC358F21EB7CD1F00076B59 /* Timer.swift in Sources */,
 				CD574FD21E7C86010071A110 /* SwiftyURLProtocol.swift in Sources */,
 				CDE6116B1E79B5F3004B260F /* HTTPConnection.swift in Sources */,
 			);
