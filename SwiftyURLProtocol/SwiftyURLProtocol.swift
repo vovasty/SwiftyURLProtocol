@@ -79,6 +79,10 @@ open class SwiftyURLProtocol: URLProtocol {
     override init(request: URLRequest, cachedResponse: CachedURLResponse?, client: URLProtocolClient?) {
         guard let request = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
             assert(false)
+            super.init(request: URLRequest(url: URL(string: "about:blank")!),
+                       cachedResponse: cachedResponse,
+                       client: client)
+            return
         }
 
         URLProtocol.setProperty(true, forKey: swiftyURLProtocolPassHeader, in: request)
@@ -207,7 +211,10 @@ extension SwiftyURLProtocol: HTTPConnectionDelegate {
               newRequest request: URLRequest) {
         guard let redirectRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
             assert(false)
+            client?.urlProtocol(self, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: nil))
+            return
         }
+
         URLProtocol.removeProperty(forKey: swiftyURLProtocolPassHeader, in: redirectRequest)
         // Tell the client about the redirect.
 
@@ -237,6 +244,8 @@ extension SwiftyURLProtocol: URLSessionDelegate {
 
         guard let redirectRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
             assert(false)
+            client?.urlProtocol(self, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: nil))
+            return
         }
 
         URLProtocol.removeProperty(forKey: swiftyURLProtocolPassHeader, in: redirectRequest)
